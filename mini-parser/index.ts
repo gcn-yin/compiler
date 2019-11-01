@@ -60,19 +60,14 @@ class RegExpRule implements IRule {
         this.regExp = new RegExp(regText);
     }
 
-    private startsWithRegExp(input: string) {
-        const regExpExecArray = this.regExp.exec(input);
-        const contain = regExpExecArray ? regExpExecArray.index === 0 : false;
-        const capturedText = regExpExecArray ? regExpExecArray[0] : '';
-        return { contain, capturedText };
-    }
-
     public visit(source: ISource) {
         source.accept(this);
     }
 
     public tryParse(input: string) {
-        const { contain, capturedText } = this.startsWithRegExp(input);
+        const regExpExecArray = this.regExp.exec(input);
+        const contain = regExpExecArray ? regExpExecArray.index === 0 : false;
+        const capturedText = regExpExecArray ? regExpExecArray[0] : '';
         return { contain, capturedText };
     }
 }
