@@ -1,81 +1,97 @@
-interface ISource {
-    getTokenList(): string[];
-    addRule(...rule: IRule[]): ISource;
-    accept(rule: IRule): void;
-    parse(): void;
-}
-
-class Source implements ISource {
-    private readonly tokenList: string[] = [];
-    private readonly rules: IRule[] = [];
-
-    public constructor(private content: string) { }
-
-    public getTokenList() {
-        return this.tokenList;
-    }
-
-    public addRule(...rule: IRule[]): ISource {
-        this.rules.push(...rule);
-        return this;
-    }
-
-    public parse() {
-        for (let it of this.rules) {
-            const { contain, capturedText } = it.tryParse(this.content);
-            if (!contain) {
-                break;
-            }
-            this.tokenList.push(capturedText);
-            this.content = this.content.replace(capturedText, '');
-        }
-    }
-
-    public accept(rule: IRule) {
-        const { contain, capturedText } = rule.tryParse(this.content);
-    }
-}
-
 interface IRule {
-    visit(source: ISource): void;
-    tryParse(input: string): { contain: boolean, capturedText: string };
+    accept(input: string): { contain: boolean, groups: IGroup[] };
 }
 
-class RawRule implements IRule {
-    public constructor(private readonly rawText: string) {}
+interface IGroup {
+    getGroups(): string | IGroup[];
+}
 
-    public visit(source: ISource) {
-        source.accept(this);
+class Group implements IGroup {
+    protected constructor(private readonly groups: IGroup[]) { }
+
+    public static of(...groups: IGroup[]) {
+        return new Group(groups);
     }
 
-    public tryParse(input: string) {
-        const contain = input.startsWith(this.rawText);
-        return { contain, capturedText: this.rawText };
+    public getGroups() {
+        return this.groups;
+    }
+}
+
+class RawTextGroup implements IGroup {
+    protected constructor(private readonly text: string) { }
+
+    public static of(text: string) {
+        return new RawTextGroup(text);
+    }
+
+    public getGroups() {
+        return this.text;
+    }
+}
+
+class RawTextRule implements IRule {
+    protected constructor(private readonly text: string) { }
+
+    public static of(text: string): IRule {
+        return new RawTextRule(text);
+    }
+
+    public accept(input: string) {
+        return { contain: input.startsWith(this.text), groups: [RawTextGroup.of(this.text)] };
     }
 }
 
 class RegExpRule implements IRule {
     private readonly regExp: RegExp;
-    public constructor(regText: string) { 
-        this.regExp = new RegExp(regText);
+
+    protected constructor(regExp: string | RegExp) {
+        this.regExp = new RegExp(regExp);
     }
 
-    public visit(source: ISource) {
-        source.accept(this);
+    public static of(regExp: string | RegExp): IRule {
+        return new RegExpRule(regExp);
     }
 
-    public tryParse(input: string) {
+    public accept(input: string) {
         const regExpExecArray = this.regExp.exec(input);
         const contain = regExpExecArray ? regExpExecArray.index === 0 : false;
         const capturedText = regExpExecArray ? regExpExecArray[0] : '';
-        return { contain, capturedText };
+        return { contain, groups: [RawTextGroup.of(capturedText)] };
     }
 }
 
-const rule1 = new RawRule("hello");
-const rule2 = new RegExpRule(" +");
-const rule3 = new RawRule("world!");
+class TimesRule implements IRule {
+    protected constructor(private readonly times: number, private readonly rule: IRule) { }
 
-const source = new Source("hello          world!");
-source.addRule(rule1, rule2, rule3).parse();
-console.log(source.getTokenList()); // ["hello", "          ", "world!"]
+    /**
+     * times should >= 0
+     * if you pass a number that < 0
+     * rule will accept it as 0
+     */
+    public static of(times: number, rule: IRule): IRule {
+        return new TimesRule(times, rule);
+    }
+
+    public accept(input: string) {
+        const temp = input;
+        const groups: IGroup[] = [];
+        let i = 0;
+        for (; i < this.times; i++) {
+            const { contain: _c, groups: _g } = this.rule.accept(temp);
+            if (_c) {
+                groups.push(Group.of(..._g));
+            } else {
+                break;
+            }
+        }
+        const contain = this.times <= i;
+        return { contain, groups };
+    }
+}
+
+const rule = TimesRule.of(3, RawTextRule.of('haha '));
+console.log(rule.accept('haha haha haha '));
+
+const rule2 = RawTextRule.of('lalala');
+console.log(rule2.accept('lalala'))
