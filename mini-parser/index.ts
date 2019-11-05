@@ -170,7 +170,7 @@ class AndRule implements IRule {
                 break;
             }
         }
-        const contain = count === this.rules.length - 1;
+        const contain = count === this.rules.length;
         return { contain, groups };
     }
 }
@@ -190,9 +190,10 @@ class OrRule implements IRule {
             const { contain: _c, groups: _g } = rule.accept(temp);
             if (_c) {
                 groups.push(TreeGroup.of(..._g));
-                temp = temp.replace(_g.map(g => g.toRawString()).join(""), '');
                 contain = true;
                 break;
+            } else {
+                temp = temp.replace(_g.map(g => g.toRawString()).join(""), '');
             }
         }
         return { contain, groups };
@@ -230,4 +231,3 @@ const rule5 = AndRule.of(
     ZeroOrMoreRule.of(RawTextRule.of("fuck")),
     OrRule.of(RawTextRule.of("!"), RawTextRule.of("?")));
 console.log(rule5.accept("lalalafuck?"));
-console.log(rule5.accept("lalalafuck?").groups.map(g => g.toRawString()).join(""));
