@@ -5,7 +5,7 @@ interface IRule {
 
 interface IGroup {
     getName(): string | null | undefined;
-    getGroups(): string | IGroup[];
+    getSubGroups(): IGroup[];
     toRawString(): string;
 }
 
@@ -16,7 +16,7 @@ class TreeGroup implements IGroup {
         return new TreeGroup(groups, name);
     }
 
-    public getGroups() {
+    public getSubGroups() {
         return this.groups;
     }
 
@@ -36,8 +36,8 @@ class LeafGroup implements IGroup {
         return new LeafGroup(text, name);
     }
 
-    public getGroups() {
-        return this.text;
+    public getSubGroups() {
+        return [];
     }
 
     public toRawString() {
