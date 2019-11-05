@@ -12,7 +12,7 @@ interface IGroup {
 class TreeGroup implements IGroup {
     protected constructor(private readonly groups: IGroup[], private readonly name: string | null | undefined = null) { }
 
-    public static of(groups: IGroup[], name: string | null | undefined = null) {
+    public static of(groups: IGroup[], name: string | null | undefined = null): IGroup {
         return new TreeGroup(groups, name);
     }
 
@@ -32,7 +32,7 @@ class TreeGroup implements IGroup {
 class LeafGroup implements IGroup {
     protected constructor(private readonly text: string, private readonly name: string | null | undefined = null) { }
 
-    public static of(text: string, name: string | null | undefined = null) {
+    public static of(text: string, name: string | null | undefined = null): IGroup {
         return new LeafGroup(text, name);
     }
 
