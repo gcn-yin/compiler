@@ -203,32 +203,20 @@ class ZeroOrMoreRule implements IRule {
 }
 
 class AnyCharRule implements IRule {
-    protected constructor(public readonly name: string | null | undefined = null) { }
+    protected constructor(private readonly except: string, public readonly name: string | null | undefined = null) { }
 
     public static of(name: string | null | undefined = null) {
-        return new AnyCharRule(name);
+        return new AnyCharRule('', name);
+    }
+
+    public static except(text: string, name: string | null | undefined = null) {
+        return new AnyCharRule(text, name);
     }
 
     public accept(input: string) {
-        const contain = input.length > 0;
-        return { contain, group: LeafGroup.of(input[0] || '', this.name) };
+        if (input.length && input[0] !== this.except) {
+            return { contain: true, group: LeafGroup.of(input[0], this.name) };
+        }
+        return { contain: false, group: LeafGroup.of('', this.name) };
     }
 }
-
-const rule = AndRule.of(
-    [
-        TextRule.of('hello', 'HELLO_RULE'),
-        OrRule.of(
-            [
-                TextRule.of(", "),
-                TimesRule.of(3, TextRule.of(' ', "SPACE"), 'TIMES')
-            ],
-            "NO_NAME"
-        ),
-        TextRule.of('world', 'WORLD'),
-        OneOrMoreRule.of(TextRule.of('!'), 'SAMPLE')
-    ],
-    'HELLO_WORLD'
-);
-
-console.log(JSON.stringify(rule.accept("hello   world!!!")));
