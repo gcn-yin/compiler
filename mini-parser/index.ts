@@ -220,3 +220,24 @@ class AnyCharRule implements IRule {
         return { contain: false, group: LeafGroup.of('', this.name) };
     }
 }
+
+const rule = ZeroOrMoreRule.of(
+    OrRule.of([
+        AndRule.of([TextRule.of('######'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H6'),
+        AndRule.of([TextRule.of('#####'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H5'),
+        AndRule.of([TextRule.of('####'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H4'),
+        AndRule.of([TextRule.of('###'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H3'),
+        AndRule.of([TextRule.of('##'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H2'),
+        AndRule.of([TextRule.of('#'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H1'),
+    ], 'MD_ELE'),
+    'MD_TOTAL');
+
+const source = `# Hello
+## World
+### You
+#### Are
+##### A
+###### Pig
+`;
+
+console.log(JSON.stringify(rule.accept(source)));
