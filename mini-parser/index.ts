@@ -223,12 +223,14 @@ class AnyCharRule implements IRule {
 
 const rule = ZeroOrMoreRule.of(
     OrRule.of([
-        AndRule.of([TextRule.of('######'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H6'),
-        AndRule.of([TextRule.of('#####'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H5'),
-        AndRule.of([TextRule.of('####'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H4'),
-        AndRule.of([TextRule.of('###'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H3'),
-        AndRule.of([TextRule.of('##'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H2'),
-        AndRule.of([TextRule.of('#'), TextRule.of(' '), OneOrMoreRule.of(AnyCharRule.except('\n')), TextRule.of('\n')], 'H1'),
+        AndRule.of([TextRule.of('######'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'H6'),
+        AndRule.of([TextRule.of('#####'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'H5'),
+        AndRule.of([TextRule.of('####'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'H4'),
+        AndRule.of([TextRule.of('###'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'H3'),
+        AndRule.of([TextRule.of('##'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'H2'),
+        AndRule.of([TextRule.of('#'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'H1'),
+        AndRule.of([TextRule.of('-'), OneOrMoreRule.of(TextRule.of(' ')), OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'LI'),
+        AndRule.of([OneOrMoreRule.of(AnyCharRule.except('\n'), 'CONTENT'), TextRule.of('\n')], 'P'),
     ], 'MD_ELE'),
     'MD_TOTAL');
 
@@ -238,6 +240,9 @@ const source = `# Hello
 #### Are
 ##### A
 ###### Pig
+- Hello
+- World
+hello, world!
 `;
 
 console.log(JSON.stringify(rule.accept(source)));
