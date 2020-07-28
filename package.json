@@ -5,6 +5,9 @@
   "repository": "git@github.com:gcnyin/compiler.git",
   "author": "gcnyin <guchounongyin@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "ts-node regex-compiler/index.ts"
+  },
   "dependencies": {
     "@types/node": "^14.0.26",
     "ts-node": "^8.10.2",
