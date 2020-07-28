@@ -114,3 +114,9 @@ venv.bak/
 .vscode/launch.json
 eopl_in_other_languages/.vscode/launch.json
 eopl_in_other_languages/python/.vscode/launch.json
+
+# ide
+.vscode
+.idea
+
+node_modules

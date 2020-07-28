@@ -10,8 +10,6 @@
 
 - 对Python“方法”与“函数”的语法分析器（回溯解析器）
 
-- 《编程语言实现模式》学习笔记
+- mini parser combinator
 
-- 《计算的本质》学习笔记
-
-- Thompson算法
+- simple regex compiler
