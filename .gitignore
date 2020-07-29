@@ -120,3 +120,6 @@ eopl_in_other_languages/python/.vscode/launch.json
 .idea
 
 node_modules
+
+# tsc
+dist
