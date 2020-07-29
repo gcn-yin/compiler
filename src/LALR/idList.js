@@ -20,7 +20,7 @@ class IdListTail {
 }
 
 function isLetter(c) {
-  return c.toLowerCase() != c.toUpperCase();
+  return c.toLowerCase() !== c.toUpperCase();
 }
 
 class Parser {
@@ -85,7 +85,7 @@ class Parser {
 
 const tokens = ["a", ",", "b", ",", "c", ",", "d", ";"];
 
-let p = new Parser(tokens);
+const p = new Parser(tokens);
 
 console.log(p.idList());
 

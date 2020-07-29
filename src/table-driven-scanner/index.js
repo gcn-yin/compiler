@@ -18,30 +18,30 @@ class TableDrivenScanner {
       r: "register",
       number: "digit",
       eof: "other",
-      other: "other"
+      other: "other",
     };
     this.typeTable = {
       s0: "invalid",
       s1: "invalid",
       s2: "register",
-      se: "invalid"
+      se: "invalid",
     };
     this.transformTable = {
       s0: { register: "s1", digit: "se", other: "se" },
       s1: { register: "se", digit: "s2", other: "se" },
       s2: { register: "se", digit: "s2", other: "se" },
-      se: { register: "se", digit: "se", other: "se" }
+      se: { register: "se", digit: "se", other: "se" },
     };
   }
 
   nextChar() {
-    let result = this.input[this.pointer];
+    const result = this.input[this.pointer];
     this.pointer++;
     return result;
   }
 
   rollback() {
-    let result = this.input[this.pointer];
+    const result = this.input[this.pointer];
     this.pointer--;
     return result;
   }
@@ -61,17 +61,17 @@ class TableDrivenScanner {
 
   nextWord() {
     let state = "s0";
-    let lexeme = [];
+    const lexeme = [];
     this.stack = [];
     this.stack.push("bad");
     while (state !== this.se) {
-      let char = this.nextChar();
+      const char = this.nextChar();
       lexeme.push(char);
       if (this.sa.includes(state)) {
         this.stack = [];
       }
       this.stack.push(state);
-      let cat = this._charCat(char);
+      const cat = this._charCat(char);
       state = this.transform(state, cat);
     }
     while (!this.sa.includes(state) && state !== "bad") {
@@ -90,7 +90,7 @@ class TableDrivenScanner {
   }
 }
 
-let p = new TableDrivenScanner("r123");
+const p = new TableDrivenScanner("r123");
 console.log(p.nextWord());
 
 module.exports = {};
