@@ -6,6 +6,8 @@
   "author": "gcnyin <guchounongyin@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "lint:fix": "eslint . --fix",
+    "test": "jest --coverage --coverageReporters json-summary text text-summary",
     "start": "ts-node regex-compiler/index.ts"
   },
   "devDependencies": {

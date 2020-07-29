@@ -7,7 +7,7 @@ describe("test regex compiler", () => {
     expect(isMatch("ab", ".*")).toEqual(true);
     expect(isMatch("aab", "c*a*b")).toEqual(true);
     expect(isMatch("mississippi", "mis*is*p*.")).toEqual(false);
-  })
+  });
 
   it("without preprocess", () => {
     const matchResult = compile("a*a").match("aaa");
