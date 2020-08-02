@@ -123,3 +123,6 @@ node_modules
 
 # tsc
 dist
+
+# jest
+coverage/
